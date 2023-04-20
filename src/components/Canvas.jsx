@@ -2,12 +2,27 @@ import { useOnDraw } from "./Hooks";
 
 const Canvas = ({width, height}) => {
 
-    const setCanvasRef = useOnDraw(onDraw);
+    const {
+        onMouseDown, setCanvasRef
+    } = useOnDraw(onDraw);
 
-    function onDraw(ctx, point){
-        ctx.fillStyle = "#330066";
+
+    function onDraw(ctx, point, prevPoint){
+        drawLine(prevPoint, point, ctx, "#330066", 5);
+    }
+
+    function drawLine(start, end, ctx, color, width){
+        start = start ?? end;
         ctx.beginPath();
-        ctx.arc(point.x, point.y, 2, 0, 2 * Math.PI);
+        ctx.lineWidth = width;
+        ctx.cstrokeStyle = color;
+        ctx.moveTo(start.x, start.y);
+        ctx.lineTo(end.x, end.y);
+        ctx.stroke();
+
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(start.x, start.y, 2, 0, 2 * Math.PI);
         ctx.fill();
     }
 
@@ -15,6 +30,7 @@ const Canvas = ({width, height}) => {
         <canvas 
             width={width}
             height={height}
+            onMouseDown={onMouseDown}
             style={canvasStyle}
             ref={setCanvasRef}
         />
